@@ -140,10 +140,10 @@ namespace FurnitureStore.Controllers
             fileStream.Close();
 
             SmtpClient emailBill = new SmtpClient("smtp-mail.outlook.com", 587);
-            NetworkCredential credential = new NetworkCredential("besho2018engcpe@outlook.com", "1962HNnbm2003");
+            NetworkCredential credential = new NetworkCredential("email@outlook.com", "password");
             emailBill.Credentials = credential;
             emailBill.EnableSsl = true;
-            MailMessage mail = new MailMessage("besho2018engcpe@outlook.com", _context.Accounts.Where(acc => acc.UserId == id).FirstOrDefault().Username, "Bill", table);
+            MailMessage mail = new MailMessage("email@outlook.com", _context.Accounts.Where(acc => acc.UserId == id).FirstOrDefault().Username, "Bill", table);
             mail.IsBodyHtml = true;
             mail.Attachments.Add(new Attachment($"bill_{payment.Id}.pdf"));
             TempData["EmailStatus"] = "Bill sent by email";

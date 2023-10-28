@@ -1,0 +1,309 @@
+﻿@model Tuple<IEnumerable<Section>, IEnumerable<Furniture>, IEnumerable<Offer>, IEnumerable<Testimonial>,Pages>
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+@using Microsoft.EntityFrameworkCore;
+@functions{
+	async Task Furnitures()
+	{
+		foreach (Furniture furniture in Model.Item2.Take(4))
+		{
+			ModelContext context = new ModelContext();
+			var offer = await context.Offers.Where(offer => offer.FurnitureId == furniture.Id && offer.StartDate <= DateTime.Today && offer.EndDate >= DateTime.Today).OrderByDescending(offer => offer.Id).FirstOrDefaultAsync();
+			var reviews = await context.Ratings.Where(rating => rating.FurnitureId == furniture.Id).ToListAsync();
+			var count = (int)reviews.Sum(review => review.Stars) / (reviews.Count() == 0 ? 1 : reviews.Count());
+			<div class="col-sm-3" style="border:groove;cursor:pointer;" onclick=window.open("/Furnitures/ShowProduct/@furniture.Id")>
+				<div class="single-feature">
+					@if (offer != null)
+					{
+						<div class="sale bg-2">
+							<p>sale</p>
+						</div>
+					}
+					<img src="~/Images/@furniture.Imagepath" alt="feature image" style="width:300px;height:300px">
+					<div class="single-feature-txt text-center">
+						<p>
+							@for (int i = 1; i <= 5; i++)
+							{
+								if (i <= count)
+								{
+									<i class="fa fa-star"></i>
+								}
+								else
+								{
+									<span class="spacial-feature-icon"><i class="fa fa-star"></i></span>
+								}
+							}
+							<span class="feature-review">(@reviews.Count() review)</span>
+						</p>
+						<h1>@furniture.Name</h1>
+						@if (offer != null)
+						{
+							<p style="font-size:20px;color:black">
+								<span title="Current Price">@string.Format("{0:C}", furniture.Price - furniture.Price * offer.Percentage / 100m)</span>
+								<del title="Old Price">@string.Format("{0:C}", furniture.Price)</del>
+							</p>
+						}
+						else
+						{
+							<p title="Current Price" style="font-size:20px;color:black">
+								$@furniture.Price
+							</p>
+						}
+					</div>
+				</div>
+			</div>
+		}
+	}
+}
+
+
+
+
+<div id="header-carousel" class="carousel slide carousel-fade" data-ride="carousel">
+	<!--/.carousel-indicator -->
+	<ol class="carousel-indicators">
+		@{
+			int i = 0;
+		}
+		@foreach(Offer offer in Model.Item3)
+		{
+			if (i == 0)
+			{
+				<li data-target="#header-carousel" data-slide-to="@i" class="active"><span class="small-circle"></span></li>
+			}
+			else
+			{
+				<li data-target="#header-carousel" data-slide-to="@i"><span class="small-circle"></span></li>
+			}
+			i++;
+		}
+	</ol><!-- /ol-->
+	<!--/.carousel-indicator -->
+	<!--/.carousel-inner -->
+	<div class="carousel-inner" role="listbox">
+		<!-- .item -->
+		@{
+			i = 0;
+			foreach(Offer offer in Model.Item3)
+			{
+				@if (i == 0)
+				{
+					<div class="item active" >
+						<div class="single-slide-item slide1">
+							<div class="container">
+								<div class="welcome-hero-content" >
+									<div class="row">
+										<div class="col-sm-7">
+											<div class="single-welcome-hero">
+												<div class="welcome-hero-txt">
+													<h6>in @offer.Furniture.Section.Name section</h6>
+													<h2>@offer.Furniture.Name</h2>
+													<p>
+														@offer.Furniture.Description
+													</p>
+													<div class="packages-price">
+														<p>@string.Format("{0:C}", offer.Furniture.Price - offer.Furniture.Price * offer.Percentage / 100m)
+															<del>@string.Format("{0:C}", offer.Furniture.Price)</del>
+														</p>
+													</div>
+													<a asp-action="ShowProduct" asp-route-id="@offer.Furniture.Id" asp-controller="Furnitures" class="btn-cart welcome-add-cart welcome-more-info" style="text-align:center" onclick="window.location.href='#'">
+														more info
+													</a>
+												</div><!--/.welcome-hero-txt-->
+											</div><!--/.single-welcome-hero-->
+										</div><!--/.col-->  
+										<div class="col-sm-5">
+											<div class="single-welcome-hero">
+												<div class="welcome-hero-img">
+													<img src="~/Images/@offer.Furniture.Imagepath" alt="slider image">
+												</div><!--/.welcome-hero-txt-->
+											</div><!--/.single-welcome-hero-->
+										</div><!--/.col-->
+									</div><!--/.row-->
+								</div><!--/.welcome-hero-content-->
+							</div><!-- /.container-->
+						</div><!-- /.single-slide-item-->
+					</div><!-- /.item .active-->
+				}
+				else
+				{
+					<div class="item" >
+						<div class="single-slide-item slide1">
+							<div class="container">
+								<div class="welcome-hero-content">
+									<div class="row">
+										<div class="col-sm-7">
+											<div class="single-welcome-hero">
+												<div class="welcome-hero-txt">
+													<h6>in @offer.Furniture.Section.Name section</h6>
+													<h2>@offer.Furniture.Name</h2>
+													<p>
+														@offer.Furniture.Description
+													</p>
+													<div class="packages-price">
+														<p>
+															@string.Format("{0:C}", offer.Furniture.Price - offer.Furniture.Price * offer.Percentage / 100m)
+															<del>@string.Format("{0:C}", offer.Furniture.Price)</del>
+														</p>
+													</div>
+													<a asp-action="ShowProduct" asp-route-id="@offer.Furniture.Id" asp-controller="Furnitures" class="btn-cart welcome-add-cart welcome-more-info" onclick="window.location.href='#'">
+														more info
+													</a>
+												</div><!--/.welcome-hero-txt-->
+											</div><!--/.single-welcome-hero-->
+										</div><!--/.col-->
+										<div class="col-sm-5">
+											<div class="single-welcome-hero">
+												<div class="welcome-hero-img">
+													<img src="~/Images/@offer.Furniture.Imagepath" alt="slider image">
+												</div><!--/.welcome-hero-txt-->
+											</div><!--/.single-welcome-hero-->
+										</div><!--/.col-->
+									</div><!--/.row-->
+								</div><!--/.welcome-hero-content-->
+							</div><!-- /.container-->
+						</div><!-- /.single-slide-item-->
+					</div>
+					<!-- /.item .active-->
+				}
+				i++;
+			}
+			
+		}
+	</div><!-- /.carousel-inner-->
+</div><!--/#header-carousel-->
+
+
+<!--populer-products end-->
+<asp:button id="btnCancel" runat="server" text="Cancel" OnClientClick="JavaScript:window.history.back(1); return false;" />
+<section id="new-arrivals" class="new-arrivals">
+	<div class="container">
+		<div class="section-header">
+			<p style="color:#e99c2e;font-size:50px">@Model.Item5.Greeting</p>
+			<p style="color:#e99c2e;font-size:30px">@Model.Item5.SecLogoPath</p>
+		</div><!--/.section-header-->
+	</div>
+</section>
+
+
+
+
+
+<!--new-arrivals start -->
+<section id="new-arrivals" class="new-arrivals">
+	<div class="container">
+		<div class="section-header">
+			<h2>Sections</h2>
+		</div><!--/.section-header-->
+		<div class="new-arrivals-content">
+			<div class="row">
+				@foreach(Section Section in Model.Item1.Take(4))
+				{
+					<div class="col-md-3 col-sm-4" onclick=window.open("/Furnitures/FurnituresOfSection/@Section.Id") style="border:groove">
+						<div class="single-new-arrival">
+							<div class="single-new-arrival-bg">
+								<img src="~/Images/@Section.ImagePath" alt="new-arrivals images">
+								<div class="single-new-arrival-bg-overlay"></div>
+								
+							</div>
+							<h4><a href="#">@Section.Name</a></h4>
+							<p class="arrival-product-price">@Section.Furnitures.Count(furnitrue=>furnitrue.SectionId==Section.Id) Products</p>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+		<h1 style="text-align:right"><a asp-action="Search" asp-controller="Sections" style="color:#e99c2e;font-size:25px">all sections</a></h1>
+	</div><!--/.container-->
+</section><!--/.new-arrivals-->
+<!--new-arrivals end -->
+
+<hr />
+
+<!--sofa-collection start -->
+<section id="sofa-collection">
+	<div class="section-header" style="margin:20px;">
+		<h2>Testimonials</h2>
+	</div><!--/.section-header-->
+	<div class="owl-carousel owl-theme" id="collection-carousel">
+	@foreach(Testimonial testimonial in Model.Item4)
+		{
+			<div class="container">
+				<div class="row" style="background-color:#e99c2e;padding:20px;">
+					<div class="col-md-2 col-sm-12">
+						<center><img src=@Url.Content("~/Images/"+ testimonial.Sender.Imagepath) alt="brand-image" style="width:200px;height:200px" /></center>
+						<center><h1>@testimonial.Sender.Firstname @testimonial.Sender.Lastname</h1></center>
+					</div>
+					<div class="col-md-9 offset-md-1 col-sm-12">
+						<p style="padding:20px;font-size:20px;color:black">
+							@testimonial.Text
+						</p>
+					</div>
+				</div>
+			</div>
+		}
+	</div><!--/.collection-carousel-->
+</section><!--/.sofa-collection-->
+<!--sofa-collection end -->
+
+<!--feature start -->
+<section id="feature" class="feature">
+	<div class="container">
+		<div class="section-header">
+			<h2>Furnitures</h2>
+		</div><!--/.section-header-->
+		<div class="feature-content">
+			<div class="row">
+				@{
+					await Furnitures();
+				}
+				<h1 style="text-align:right"><a asp-action="Search" asp-controller="Furnitures" style="color:#e99c2e;font-size:25px">all furnitures</a></h1><br />
+			</div>
+		</div>
+	</div><!--/.container-->
+</section><!--/.feature-->
+<!--feature end -->
+
+
+<hr id="ContactUsForm"/>
+<br />
+<div class="section-header">
+	<h2>Contact us</h2>
+</div><!--/.section-header-->
+<br />
+<div class="container">
+<fieldset>
+		<form asp-action="CreateMessage" asp-controller="Messages" enctype="multipart/form-data" style="background-color:#e99c2e;padding:50px">
+		<div class="row">
+			<div class="col-4 offset-2">
+				<input type="email" class="form-control" id="email" name="email" placeholder="Your Email" style="height:50px" required maxlength="500">
+				<br />
+			</div>
+			<div class="col-4 offset-2">
+				<input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" style="height:50px" required maxlength="100">
+				<br />
+			</div>
+			<div class="col-4 offset-2">
+				<textarea class="form-control" placeholder="Leave a message here" id="messageText" name="messageText" style="height: 200px" required ></textarea>
+				<br />
+			</div>
+			<div class="col-4 offset-2">
+				<img src="~/Images/defaultMessageImage.jpeg" hidden id="output" style="border:groove;min-height:210;max-height:210" />
+				<br />
+				<input name="image"  type="file" accept="image/*" onchange="loadFile(event)" id="image" width="150" />
+				<input type="button" value="remove" id="removebutton" onclick="dropImageMessage('output','image')" hidden />
+				<br />
+			</div>
+			<div class="col-4 offset-2">
+				<center><button type="submit" style="height:50px;width:150px;background-color:darkslategray;color:white">Send Message</button></center>
+			</div>
+		</div>
+	</form>
+	</fieldset>
+</div><br />
+<hr />
+<!-- Contact End -->
+<!-- offset-xs-4 offset-sm-4 offset-md-4 offset-lg-4-->
+<script src="~/js/myScript.js"></script>

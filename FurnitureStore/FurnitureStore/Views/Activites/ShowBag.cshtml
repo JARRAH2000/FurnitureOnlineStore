@@ -1,0 +1,139 @@
+﻿@model IEnumerable<FurnitureStore.Models.Bag>
+
+@{
+    ViewData["Title"] = "ShowBag";
+    Layout = "_HomeLayout";
+}
+@functions{
+
+    decimal CalcualteTotal()
+    {
+        ModelContext context = new ModelContext();
+        decimal total = 0;
+        foreach (Bag bag in Model)
+        {
+            decimal price = bag.Furniture.Price;
+            var offer = context.Offers.Where(ofr => ofr.FurnitureId == bag.FurnitureId && ofr.EndDate >= DateTime.Today && ofr.StartDate <= DateTime.Today).OrderByDescending(ofr => ofr.Id).FirstOrDefault();
+            if (offer != null)
+                price = price - offer.Percentage * price / 100;
+            if (bag.Quantity > bag.Furniture.Quantity) bag.Quantity = (decimal)bag.Furniture.Quantity;
+            price *= bag.Quantity;
+            total += price;
+        }
+        return total;
+    }
+    async Task ItemsInBag()
+    {
+        ModelContext context = new ModelContext();
+        foreach (Bag bag in Model)
+        {
+            decimal price = bag.Furniture.Price;
+            var offer = context.Offers.Where(ofr => ofr.FurnitureId == bag.FurnitureId && ofr.EndDate >= DateTime.Today && ofr.StartDate <= DateTime.Today).OrderByDescending(ofr => ofr.Id).FirstOrDefault();
+            if (offer != null)
+                price = price - offer.Percentage * price / 100;
+            if (bag.Quantity > bag.Furniture.Quantity) bag.Quantity = (decimal)bag.Furniture.Quantity;
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="~/Images/@bag.Furniture.Imagepath" style="width:150px;height:150px" />
+                </div>
+                <div class="col-md-5">
+                    <h3>@bag.Furniture.Name</h3><br />
+                    <h6>Price of one piece : @string.Format("{0:C}",price)</h6>
+                    <h6>Quantity : @bag.Quantity</h6>
+                    <form asp-action="EditBag" asp-controller="Client" asp-route-id="@bag.Id" method="post">
+                        <select name="amount">
+                            @for(decimal i=1;i<=bag.Furniture.Quantity;i++)
+                            {
+                                if(i==bag.Quantity)
+                                {
+                                    <option selected="selected" value="@i">
+                                        @i
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@i">
+                                        @i
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <button type="submit">save</button>
+                    </form>
+                </div>
+                <div class="col-md-1">
+                    <p>@string.Format("{0:C}", price*bag.Quantity)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8"><hr /></div>
+                    <form asp-action="DropFromCart"  asp-controller="Bags" method="post" style="display:inline">
+                        <input name="furId" hidden value="@bag.FurnitureId" />
+                        <button type="submit" style="color:red">Drop</button>
+                    </form>
+            </div>
+        }
+    }
+    async Task VisaForm()
+    {
+        <form method="post" asp-action="Pay" asp-controller="Activites">
+            <h1>Total</h1>
+            <h3>@string.Format("{0:C}",CalcualteTotal())</h3>
+            <input type="text" placeholder="card number" name="cardNumber" required />
+            <input type="text" placeholder="cvc" name="cvc" required />
+            <input type="number" name="total" value="@CalcualteTotal()" readonly>
+            <input type="submit" value="Pay" />
+        </form>
+        if (TempData["Error"] != null)
+        {
+            <h1 style="color:red">@TempData["Error"].ToString()</h1>
+        }
+
+    }
+}
+
+<div class="container" style="margin-top:150px;">
+    <div class="row">
+        @if (Model.Count() != 0)
+        {
+            <div class="col-md-4" id="topayment">
+                @{
+                    await VisaForm();
+                }
+            </div>
+        }
+    </div>
+    <div class="row">
+        @if(Model.Count()==0)
+        {
+            <center><h1 style="font-size:50px;color:#e99c2e">Your bag is empty</h1></center>
+        }
+        else
+        {
+            <div class="col-md-8">
+                <div class="container">
+                    @{
+                        await ItemsInBag();
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                @{
+                   await VisaForm();
+                }
+            </div>
+        }
+        @if(TempData["PayStatus"]!=null)
+        {
+            <center><h1 style="color:green">@TempData["PayStatus"].ToString()</h1></center>
+        }
+        @if(TempData["EmailStatus"]!=null)
+        {
+            <center><h1 style="color:blue">@TempData["EmailStatus"].ToString()</h1></center>
+        }
+        @if (TempData["Availabe"] != null)
+        {
+            <center><h1 style="color:darkred">@TempData["Availabe"].ToString()</h1></center>
+        }
+    </div>   
+</div>

@@ -1,0 +1,10 @@
+﻿@media only screen and (max-width: 993px) {
+    #topayment {
+        display: initial;
+    }
+}
+@media only screen and (min-width: 993px) {
+    #topayment {
+        display:none;
+    }
+}

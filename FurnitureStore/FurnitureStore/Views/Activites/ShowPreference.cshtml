@@ -1,0 +1,54 @@
+﻿@model IEnumerable<FurnitureStore.Models.Favourite>
+
+@{
+    ViewData["Title"] = "ShowPreference";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+@functions{
+    decimal CheckPrice(decimal prId)
+    {
+        ModelContext context = new ModelContext();
+        var furniture =  context.Furnitures.Where(fur => fur.Id == prId).FirstOrDefault();
+        var offer = context.Offers.Where(ofr => ofr.FurnitureId == prId && ofr.EndDate >= DateTime.Today).OrderByDescending(ofr => ofr.Id).FirstOrDefault();
+        decimal price = furniture.Price;
+        if (offer != null) price = price - offer.Percentage * price / 100;
+        return price;
+    }
+}
+<div class="container" style="margin-top:150px;">
+    <div class="row">
+        <div class="col-md-3">
+            Name
+            </div>
+        <div class="col-md-3">
+            Section
+        </div>
+        <div class="col-md-3">
+            Price
+        </div>
+        <div class="col-md-3">
+            Favourite
+        </div>
+    </div>
+    <hr />
+@foreach (var item in Model) {
+    <div class="row">
+        <div class="col-md-3">
+            <h4><a asp-action="ShowProduct" asp-controller="Furnitures" asp-route-id="@item.FurnitureId"> @Html.DisplayFor(modelItem => item.Furniture.Name)</a></h4>
+        </div>
+        <div class="col-md-3">
+            <h4><a asp-action="FurnituresOfSection" asp-controller="Furnitures" asp-route-id="@item.Furniture.SectionId"> @Html.DisplayFor(modelItem => item.Furniture.Section.Name)</a></h4>
+        </div>
+        <div class="col-md-3">
+            <h4>@string.Format("{0:C}",CheckPrice(item.FurnitureId))</h4>
+        </div>
+        <div class="col-md-3">
+            <form asp-action="RemoveFavourite" asp-controller="Favourites" method="post" style="display:inline">
+                <input name="furId" hidden value="@item.FurnitureId" />
+                <button type="submit" style="font-size:35px">&#129505;<sub style="font-size:15px">Remove from favourite</sub></button>
+            </form>
+        </div>
+    </div>
+    <hr />
+}
+</div>

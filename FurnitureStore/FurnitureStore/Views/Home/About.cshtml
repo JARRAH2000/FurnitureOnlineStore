@@ -1,0 +1,25 @@
+﻿@model FurnitureStore.Models.Pages
+@{
+    ViewData["Title"] = "About";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+
+
+<!--sofa-collection start -->
+<section id="sofa-collection" style="margin-top:120px;">
+	<div class="owl-carousel owl-theme" id="collection-carousel">
+		<div class="sofa-collection collectionbg1" style="background:url(/Images/@Model.AboutImagePath);">
+			<div class="container">
+				<div class="sofa-collection-txt">
+					<h2>@Model.Greeting</h2>
+					<p>
+						@Model.About
+					</p>
+				</div>
+			</div>
+		</div><!--/.sofa-collection-->
+	</div><!--/.collection-carousel-->
+
+</section><!--/.sofa-collection-->
+<!--sofa-collection end -->

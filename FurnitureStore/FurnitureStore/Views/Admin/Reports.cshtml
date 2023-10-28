@@ -1,0 +1,190 @@
+﻿@model Tuple<IEnumerable<Section>, IEnumerable<Furniture>, IEnumerable<ProductPayment>, IEnumerable<Payment>>
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="https://cdn.datatables.net/1.11.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css" rel="stylesheet" />
+
+
+
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row m-t-25">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="overview-item overview-item--c2">
+                        <div class="overview__inner">
+                            <div class="overview-box clearfix">
+                                <form asp-action="Reports" asp-controller="Admin" method="post">
+                                    <input type="date" name="dateFrom"/>
+                                    <input type="date" name="dateTo"/>
+                                    <input type="submit" value="search" style="cursor:pointer"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="title-1 m-b-25">Sections</h2>
+                    <div class="table-responsive table--no-card m-b-40">
+                        <table class="table table-borderless table-striped table-earning" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Products</th>
+                                    <th>Orders</th>
+                                    <th>Cost</th>
+                                    <th>Sales</th>
+                                    <th>Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Item1)
+                                {
+                                    decimal? orderCount = 0, sales = 0, cost = 0;
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem=>item.Furnitures.Count)
+                                        </td>
+                                        <td>
+                                            @{
+                                                orderCount = Model.Item3.Where(bill => bill.Furniture != null && bill.Furniture.Section != null && bill.Furniture.Section == item).Count();
+                                            }
+                                            @orderCount
+                                        </td>
+                                        <td>
+                                            @{
+                                                cost = Model.Item3.Where(bill => bill.Furniture != null && bill.Furniture.Section != null && bill.Furniture.Section == item).Sum(bill => bill.Furniture.Cost * bill.Quantity);
+                                            }
+                                            @string.Format("{0:C}",cost)
+                                        </td>
+                                        <td>
+                                            @{
+                                                sales = Model.Item3.Where(bill => bill.Furniture != null && bill.Furniture.Section != null && bill.Furniture.Section == item).Sum(bill => bill.Price * bill.Quantity);
+                                            }
+                                            @string.Format("{0:C}",sales)
+                                        </td>
+                                        <td>
+                                            @string.Format("{0:C}",sales-cost)                                            
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="title-1 m-b-25">Furnitures</h2>
+                    <div class="table-responsive table--no-card m-b-40">
+                        <table class="table table-borderless table-striped table-earning" id="data_table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Section</th>
+                                    <th>Remain</th>
+                                    <th>Orders</th>
+                                    <th>Cost</th>
+                                    <th>Sales</th>
+                                    <th>Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Item2)
+                                {
+                                    decimal? orderCount = 0, sales = 0, cost = 0;
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem=>item.Section.Name)
+                                        </td>
+                                        <td>
+                                            @item.Quantity
+                                        </td>
+                                        <td>
+                                            @{
+                                                orderCount = Model.Item3.Where(bill => bill.FurnitureId == item.Id).Count();
+                                            }
+                                            @orderCount
+                                        </td>
+                                        <td>
+                                            @{
+                                                cost = Model.Item3.Where(bill => bill.FurnitureId == item.Id).Sum(bill => bill.Quantity * item.Cost);
+                                            }
+                                            @string.Format("{0:C}",cost)
+                                        </td>
+                                        <td>
+                                            @{
+                                                sales = Model.Item3.Where(bill => bill.FurnitureId == item.Id).Sum(bill => bill.Price * bill.Quantity);
+                                            }
+                                            @string.Format("{0:C}",sales)
+                                        </td>
+                                        <td>
+                                            @string.Format("{0:C}",sales-cost)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js" defer></script>
+
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js" defer></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js" defer></script>
+
+<script>
+    $(document).ready(function () {
+        $('#datatable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#data_table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<FurnitureStore.Models.Image>
+
+@{
+    ViewData["Title"] = "ShowImages";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h2>Images</h2>
+            <div class="row m-t-25">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="overview-item overview-item--c2">
+                        <div class="overview__inner">
+                            <div class="overview-box clearfix">
+                                <div class="icon">
+                                    <i class="zmdi zmdi-collection-plus"></i>
+                                </div>
+                                <div class="text">
+                                    <a asp-action="AddImage" asp-controller="Furnitures" asp-route-furId="@ViewBag.FurName.Id">Add New Image</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="title-1 m-b-25">Images of @ViewBag.FurName.Name</h2>
+                    <div class="table-responsive table--no-card m-b-40">
+                        <table class="table table-borderless table-striped table-earning">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Imagepath)
+                                    </th>
+                                    <th>
+                                        Options
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model) 
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src=@Url.Content("~/Images/" + item.Imagepath)
+                                            asp-append-version="true" style="border-radius:20%;
+                                            width=300px;height:300px" />
+                                        </td>
+                                       
+                                        <td>
+                                            <a asp-action="DeleteImage" asp-controller="Furnitures" asp-route-id="@item.Id" asp-route-furId="@ViewBag.FurName.Id">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+
+@using Microsoft.AspNetCore.Http;
+@functions{
+    async Task AdminData()
+    {
+        if (Context.Session.GetInt32("UserID") != null)
+        {
+            decimal? id = (decimal)Context.Session.GetInt32("UserID");
+            ModelContext context = new ModelContext();
+            User user = context.Users.FirstOrDefault(user => user.Id == id);
+            <div class="account-wrap">
+                <div class="account-item clearfix js-item-menu">
+                    <div class="image">
+                        <img src="~/Images/@user.Imagepath" alt="@user.Firstname @user.Lastname" />
+                    </div>
+                    <div class="content">
+                        <a class="js-acc-btn" asp-action="Edit" asp-controller="Client" asp-route-id="@Context.Session.GetInt32("UserID")">@user.Firstname @user.Lastname</a>
+                    </div>
+                    <div class="account-dropdown js-dropdown">
+                        <div class="info clearfix">
+                            <div class="image">
+                                <a asp-action="Edit" asp-controller="Client" asp-route-id="@Context.Session.GetInt32("UserID")">
+                                    <img src="~/Images/@user.Imagepath" alt="@user.Firstname @user.Lastname" />
+                                </a>
+                            </div>
+                            <div class="content">
+                                <h5 class="name">
+                                    <a asp-action="Edit" asp-controller="Client" asp-route-id="@Context.Session.GetInt32("UserID")">@user.Firstname @user.Lastname</a>
+                                </h5>
+                                <span class="email">@context.Accounts.Where(acc=>acc.UserId==id).FirstOrDefault().Username</span>
+                            </div>
+                        </div>
+                        <div class="account-dropdown__body">
+                            <div class="account-dropdown__item">
+                                <a asp-action="Edit" asp-controller="Client" asp-route-id="@Context.Session.GetInt32("UserID")">
+                                    <i class="zmdi zmdi-account"></i>Account</a>
+                            </div>
+                           
+                        </div>
+                        <div class="account-dropdown__footer">
+                            <a asp-action="Logout" asp-controller="Authentication">
+                                <i class="zmdi zmdi-power"></i>Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    async Task Logo()
+	{
+		ModelContext context = new ModelContext();
+		var logo = context.Pages.FirstOrDefault();
+        <a asp-action="Index" asp-controller="Home">
+            <img src="~/Images/@logo.MainLogoPath" style="width:200px;height:75px;" />
+        </a>
+    }
+    async Task Content()
+    {
+        ModelContext context = new ModelContext();
+        var contact = context.ContactInfos.FirstOrDefault();
+        var pages = context.Pages.FirstOrDefault();
+        if (contact != null)
+        {
+            <li>
+                <a asp-action="Details" asp-route-id="@contact.Id" asp-controller="ContactInfoes">
+                <i class="fas fa-phone"></i>Contact</a>
+            </li>
+        }
+        if (pages != null)
+        {
+            <li>
+                <a class="js-arrow" asp-action="Details" asp-route-id="@pages.Id" asp-controller="Pages">
+                <i class="fas fa-copy"></i>Pages</a>
+            </li>
+        }
+    }
+    async Task Messages()
+    {
+        ModelContext context = new ModelContext();
+        DateTime today = DateTime.Now.Date;
+        DateTime startDate = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0);
+        DateTime endDate = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59);
+        List<Message> messages = context.Messages.Where(msg => msg.SendTime >= startDate && msg.SendTime <= endDate).ToList();
+        <span class="quantity">@messages.Count</span>
+        <div class="mess-dropdown js-dropdown">
+            <div class="mess__title">
+                <p>You have @messages.Count new messages</p>
+            </div>
+            @foreach(Message message in messages)
+            {
+                <div class="mess__item">
+                    <div class="image img-cir img-40">
+                        <img src="~/Images/@message.ImagePath" alt="Michelle Moreno" />
+                    </div>
+                    <div class="content">
+                    <h6>
+                        @if (message.Subject.Length > 25)
+                        {
+                            @message.Subject.Substring(0, 25)
+                            <span><a asp-action="Details" asp-controller="Messages" asp-route-id="@message.Id" style="color:blue">show more</a></span>
+                        }
+                        else
+                        {
+                            @message.Subject
+                        }
+                    </h6>
+                    <p>
+                        @if (message.Text.Length > 25)
+                        {
+                            @message.Text.Substring(0, 25)
+                            <span><a asp-action="Details" asp-controller="Messages" asp-route-id="@message.Id" style="color:blue;">show more</a></span>
+                        }
+                        else
+                        {
+                            @message.Text
+                        }
+                    </p>
+                    <span class="time">@message.SendTime.ToString("hh:mm tt")</span>
+                    <p>
+                        <a asp-action="Details" asp-controller="Messages" asp-route-id="@message.Id">Details</a> |
+                        <a href="mailto:@message.Email?subject">Replay</a>
+                    </p>
+                    </div>
+                </div>
+            }
+            <div class="mess__footer">
+                <a asp-action="Index" asp-controller="Messages">View all messages</a>
+            </div>
+        </div>
+    }
+
+    async Task Testimonals()
+    {
+        ModelContext context = new ModelContext();
+        DateTime today = DateTime.Now.Date;
+        DateTime startDate = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0);
+        DateTime endDate = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59);
+        List<Testimonial> testimonials = context.Testimonials.Where(msg => msg.SendTime >= startDate && msg.SendTime <= endDate).ToList();
+
+
+        <span class="quantity">@testimonials.Count</span>
+        <div class="email-dropdown js-dropdown">
+            <div class="email__title">
+                <p>You have @testimonials.Count New Testimonials Today</p>
+            </div>
+            @foreach(Testimonial testimonial in testimonials)
+            {
+                User user = context.Users.Where(u => u.Id == testimonial.SenderId).FirstOrDefault();
+                <div class="email__item">
+                    <div class="image img-cir img-40">
+                        <img src="~/Images/@user.Imagepath" alt="Cynthia Harvey" />
+                    </div>
+                    <div class="content">
+                        @if (testimonial.Text.Length > 25)
+                        {
+                            @testimonial.Text.Substring(0, 25)
+                            <span><a asp-action="Details" asp-controller="Testimonials" asp-route-id="@testimonial.Id" style="color:blue;">show more</a></span>
+                        }
+                        else
+                        {
+                            @testimonial.Text
+                        }
+                        <span>@testimonial.SendTime.ToString("hh:mm tt")</span>
+                    </div>
+                </div>
+            }
+            
+            <div class="email__footer">
+                <a asp-action="Index" asp-controller="Testimonials">See all testimonials</a>
+            </div>
+        </div>
+    }
+}
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="au theme template">
+    <meta name="author" content="Hau Nguyen">
+    <meta name="keywords" content="au theme template">
+
+    <!-- Title Page-->
+    <title>Inbox</title>
+
+    <!-- Fontfaces CSS-->
+    <link href="~/AdminAssets/css/font-face.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link href="~/AdminAssets/vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link href="~/AdminAssets/vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="~/AdminAssets/vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="~/AdminAssets/css/theme.css" rel="stylesheet" media="all">
+
+</head>
+
+<body class="animsition">
+    <div class="page-wrapper">
+    <!-- HEADER MOBILE-->
+    <header class="header-mobile d-block d-lg-none">
+        <div class="header-mobile__bar">
+            <div class="container-fluid">
+                <div class="header-mobile-inner">
+                    <a class="logo" href="~/AdminAssets/index.html">
+                        <img src="~/AdminAssets/images/icon/logo.png" alt="CoolAdmin" />
+                    </a>
+                    <button class="hamburger hamburger--slider" type="button">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar-mobile">
+            <div class="container-fluid">
+                <ul class="navbar-mobile__list list-unstyled">
+                    <li>
+                        <a asp-action="Index" asp-controller="Home">
+                            <i class="fas fa-home"></i>Home</a>
+                    </li>
+                    <li>
+                        <a class="js-arrow" asp-action="AdminDashboard" asp-controller="Admin">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a asp-action="Reports" asp-controller="Admin">
+                            <i class="fas fa-chart-bar"></i>Reports</a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" asp-controller="Sections">
+                            <i class="fas fa-table"></i>Sections</a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" asp-controller="Furnitures">
+                            <i class="far fa-check-square"></i>Furnitures</a>
+                    </li>
+                    <li>
+                        <a asp-action="ListOfUsers" asp-controller="Admin">
+                            <i class="fas fa-user"></i>Users</a>
+                    </li>    
+                    @{
+                        await Content();
+                    }
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- END HEADER MOBILE-->
+
+    <!-- MENU SIDEBAR-->
+    <aside class="menu-sidebar d-none d-lg-block">
+        <div class="logo">
+            @{
+                await Logo();
+            }
+        </div>
+        <div class="menu-sidebar__content js-scrollbar1">
+            <nav class="navbar-sidebar">
+                <ul class="list-unstyled navbar__list">
+                    <li>
+                        <a asp-action="Index" asp-controller="Home">
+                            <i class="fas fa-home"></i>Home</a>
+                    </li>
+                    <li>
+                        <a class="js-arrow" asp-action="AdminDashboard" asp-controller="Admin">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a asp-action="Reports" asp-controller="Admin">
+                            <i class="fas fa-chart-bar"></i>Reports</a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" asp-controller="Sections">
+                            <i class="fas fa-table"></i>Sections</a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" asp-controller="Furnitures">
+                            <i class="far fa-check-square"></i>Furnitures</a>
+                    </li>
+                    <li>
+                        <a asp-action="ListOfUsers" asp-controller="Admin">
+                            <i class="fas fa-user"></i>Users</a>
+                    </li>  
+                    @{
+                        await Content();
+                    }
+                </ul>
+            </nav>
+        </div>
+    </aside>
+    <!-- END MENU SIDEBAR-->
+
+    <!-- PAGE CONTAINER-->
+    <div class="page-container">
+        <!-- HEADER DESKTOP-->
+    <header class="header-desktop">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <div class="header-wrap">
+                    <form class="form-header" action="" method="POST">
+                        <input class="au-input au-input--xl" type="text" name="search" placeholder="Search for datas &amp; reports..." hidden/>
+                        <button class="au-btn--submit" type="submit" hidden>
+                            <i class="zmdi zmdi-search"></i>
+                        </button>
+                    </form>
+                    <div class="header-button">
+                        <div class="noti-wrap">
+                            <div class="noti__item js-item-menu">
+                                <i class="zmdi zmdi-email"></i>
+                                @{
+                                    await Messages();
+                                }
+                            </div>
+                            <div class="noti__item js-item-menu">
+                                <i class="zmdi zmdi-comment-more"></i>
+                                @{
+                                    await Testimonals();
+                                }
+                            </div>
+                        </div>
+                        @{
+                            await AdminData();
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END HEADER DESKTOP-->
+
+        @RenderBody()
+    </div>
+    <!-- Jquery JS-->
+    <script src="~/AdminAssets/vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="~/AdminAssets/vendor/bootstrap-4.1/popper.min.js"></script>
+    <script src="~/AdminAssets/vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS       -->
+    <script src="~/AdminAssets/vendor/slick/slick.min.js">
+    </script>
+    <script src="~/AdminAssets/vendor/wow/wow.min.js"></script>
+    <script src="~/AdminAssets/vendor/animsition/animsition.min.js"></script>
+    <script src="~/AdminAssets/vendor/bootstrap-progressbar/bootstrap-progressbar.min.js">
+    </script>
+    <script src="~/AdminAssets/vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script src="~/AdminAssets/vendor/counter-up/jquery.counterup.min.js">
+    </script>
+    <script src="~/AdminAssets/vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="~/AdminAssets/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/AdminAssets/vendor/chartjs/Chart.bundle.min.js"></script>
+    <script src="~/AdminAssets/vendor/select2/select2.min.js">
+    </script>
+    <!-- Main JS-->
+    <script src="~/AdminAssets/js/main.js"></script>
+</div>
+</body>
+
+</html>
+<!-- end document-->

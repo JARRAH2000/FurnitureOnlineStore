@@ -1,0 +1,79 @@
+﻿@model IEnumerable<FurnitureStore.Models.ContactInfo>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_AdminLayout";
+}
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h1>Index</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Phone)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Facebook)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Instagram)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Twitter)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Youtube)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Fax)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Address)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Facebook)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Instagram)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Twitter)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Youtube)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fax)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

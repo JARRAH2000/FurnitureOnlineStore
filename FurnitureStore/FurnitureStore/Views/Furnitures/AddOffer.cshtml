@@ -1,0 +1,55 @@
+﻿@model FurnitureStore.Models.Offer
+
+@{
+    ViewData["Title"] = "AddOffer";
+    Layout = "_AdminLayout";
+}
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h2>Add Offer</h2>
+
+            <h4>Offer</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="AddOffer" asp-controller="Furnitures" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Percentage" class="control-label"></label>
+                            <input asp-for="Percentage" class="form-control" name="percentage" type="number" min="1" max="100" required />
+                            <span asp-validation-for="Percentage" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDate"  class="control-label"></label>
+                            <input asp-for="StartDate" class="form-control" name="startDate" type="date" min="@DateTime.Now" required />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EndDate"  class="control-label"></label>
+                            <input asp-for="EndDate" class="form-control" name="endDate" type="date" min="@DateTime.Now" required />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <input asp-for="Description" class="form-control" name="description" required/>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                        <input name="furId" hidden value="@Convert.ToDecimal(TempData["FurId"].ToString())" />
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Add" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="ShowOffers" asp-controller="Furnitures" asp-route-id="@Convert.ToDecimal(TempData["FurId"].ToString())">Back to List</a>
+            </div>
+
+        </div>
+    </div>
+</div>

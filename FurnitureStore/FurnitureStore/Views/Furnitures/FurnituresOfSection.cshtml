@@ -1,0 +1,75 @@
+﻿@model IEnumerable<FurnitureStore.Models.Furniture>
+@using Microsoft.EntityFrameworkCore;
+@{
+	ViewData["Title"] = "Search";
+	Layout = "_HomeLayout";
+}
+@functions {
+
+	async Task Product()
+	{
+		ModelContext context = new ModelContext();
+		@foreach (Furniture furniture in Model)
+		{
+			var offer = await context.Offers.Where(offer => offer.FurnitureId == furniture.Id && offer.StartDate <= DateTime.Today && offer.EndDate >= DateTime.Today).OrderByDescending(offer => offer.Id).FirstOrDefaultAsync();
+			var reviews = await context.Ratings.Where(rating => rating.FurnitureId == furniture.Id).ToListAsync();
+			var count = (int)reviews.Sum(review => review.Stars) / (reviews.Count() == 0 ? 1 : reviews.Count());
+			<div class="col-sm-3" style="border:groove;cursor:pointer;" onclick=window.open("/Furnitures/ShowProduct/@furniture.Id")>
+				<div class="single-feature">
+					@if (offer != null)
+					{
+						<div class="sale bg-2">
+							<p>sale</p>
+						</div>
+					}
+					<img src="~/Images/@furniture.Imagepath" alt="feature image" style="width:300px;height:300px">
+					<div class="single-feature-txt text-center">
+						<p>
+							@for (int i = 1; i <= 5; i++)
+							{
+								if (i <= count)
+								{
+									<i class="fa fa-star"></i>
+								}
+								else
+								{
+									<span class="spacial-feature-icon"><i class="fa fa-star"></i></span>
+								}
+							}
+							<span class="feature-review">(@reviews.Count() review)</span>
+						</p>
+						<h1>@furniture.Name</h1>
+						@if (offer != null)
+						{
+							<p style="font-size:20px;color:black">
+								<span title="Current Price">@string.Format("{0:C}", furniture.Price - furniture.Price * offer.Percentage / 100m)</span>
+								<del title="Old Price">@string.Format("{0:C}", furniture.Price)</del>
+							</p>
+						}
+						else
+						{
+							<p title="Current Price" style="font-size:20px;color:black">
+								$@furniture.Price
+							</p>
+						}
+					</div>
+				</div>
+			</div>
+		}
+	}
+}
+<section id="feature" class="feature">
+	<div class="container">
+		<div class="section-header">
+			<h2>Furnitures</h2>
+		</div><!--/.section-header-->
+		<div class="feature-content">
+			<div class="row">
+				@{
+					await Product();
+				}
+			</div>
+		</div>
+	</div><!--/.container-->
+</section><!--/.feature-->
+<!--feature end -->

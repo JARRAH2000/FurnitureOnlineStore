@@ -1,0 +1,40 @@
+﻿@model FurnitureStore.Models.Image
+
+@{
+    ViewData["Title"] = "AddImage";
+    Layout = "_AdminLayout";
+}
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h2>Add Image</h2>
+
+            @*<h4>Image</h4>*@
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="AddImage" enctype="multipart/form-data" method="post" asp-controller="Furnitures">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" name="file" type="file" accept="image/*" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input name="furId" hidden value="@Convert.ToDecimal(TempData["FurId"].ToString())" />
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Add" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="ShowImages" asp-controller="Furnitures" asp-route-id="@Convert.ToDecimal(TempData["FurId"].ToString())">Back to List</a>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<FurnitureStore.Models.Testimonial>
+
+@{
+    ViewData["Title"] = "ListAll";
+    Layout = "_HomeLayout";
+}
+
+<section id="sofa-collection" style="margin-top:100px">
+	<div class="section-header" style="margin-left:20px">
+		<h2>Testimonials</h2>
+	</div><!--/.section-header-->
+	@foreach (Testimonial testimonial in Model)
+	{
+		<div class="container">
+			<div class="row" style="background-color:#e99c2e;padding:20px;">
+				<div class="col-md-2 col-sm-12">
+					<center><img src=@Url.Content("~/Images/"+ testimonial.Sender.Imagepath) alt="brand-image" style="width:200px;height:200px" /></center>
+					<center><h1>@testimonial.Sender.Firstname @testimonial.Sender.Lastname</h1></center>
+				</div>
+				<div class="col-md-9 offset-md-1 col-sm-12">
+					<p style="padding:20px;font-size:20px;color:black">
+						@testimonial.Text
+					</p>
+				</div>
+			</div>
+		</div>
+		<br />
+	}
+</section><!--/.sofa-collection-->
+<!--sofa-collection end -->

@@ -1,0 +1,42 @@
+﻿@model FurnitureStore.Models.User
+
+@{
+    ViewData["Title"] = "WriteTestimonial";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<section id="feature" class="feature">
+    <div class="container">
+        <div class="section-header">
+            <h2>Testimonial</h2>
+        </div><!--/.section-header-->
+        <div class="feature-content">
+            <div class="row">
+                <fieldset>
+                    <form asp-action="WriteTestimonial" method="post" style="background-color:#e99c2e;padding:50px">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-2">
+                                <img src="@Url.Content("~/Images/"+Model.Imagepath)" width="200" height="500"/>
+                                <span style="font-size:30px;color:white" >@Model.Firstname @Model.Lastname</span>
+                                </div>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" placeholder="Please write your testimonial here" id="testimonialText" name="testimonialText" style="height: 200px;resize:none;" required maxlength="300"></textarea>
+                                    <br />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <p style="color:black;">&check; I agree to publish my testimonial</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" style="height:50px;width:166px;background-color:darkslategray;color:white">Send Testimonial</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</section>

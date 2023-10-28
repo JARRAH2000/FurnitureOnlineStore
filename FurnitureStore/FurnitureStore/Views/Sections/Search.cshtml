@@ -1,0 +1,33 @@
+﻿@model IEnumerable<FurnitureStore.Models.Section>
+
+@{
+    ViewData["Title"] = "Search";
+    Layout = "_HomeLayout";
+}
+
+
+<section id="new-arrivals" class="new-arrivals">
+	<div class="container">
+		<div class="section-header">
+			<h2>Sections</h2>
+		</div><!--/.section-header-->
+		<div class="new-arrivals-content">
+			<div class="row">
+				@foreach(Section Section in Model)
+				{
+					<div class="col-md-3 col-sm-4" style="cursor:pointer" onclick=window.open("/Furnitures/FurnituresOfSection/@Section.Id")>
+						<div class="single-new-arrival">
+							<div class="single-new-arrival-bg">
+								<img src="~/Images/@Section.ImagePath" alt="new-arrivals images">
+								<div class="single-new-arrival-bg-overlay"></div>
+								
+							</div>
+							<h4><a href="#">@Section.Name</a></h4>
+							<p class="arrival-product-price">@Section.Furnitures.Count(furnitrue=>furnitrue.SectionId==Section.Id) Products</p>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div><!--/.container-->
+</section><!--/.new-arrivals-->

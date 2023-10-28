@@ -1,0 +1,214 @@
+﻿@model Tuple<FurnitureStore.Models.Furniture,IEnumerable<FurnitureStore.Models.Image>,IEnumerable<FurnitureStore.Models.Comment>,IEnumerable<FurnitureStore.Models.Rating>,Offer>
+
+@{
+    ViewData["Title"] = "ShowProduct";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/RatingStarsStyleSheet.css" />
+@functions {
+    void PrintStars()
+    {
+        int loop = (int)Model.Item4.Sum(item => item.Stars);
+        int count = Model.Item4.Count();
+        if (count != 0) loop /= count;
+        for (int i = 0; i < loop; i++)
+        {
+            <i style="color:#e99c2e;font-size:30px" >&starf;</i>
+        }
+        @Model.Item4.Count() <span>reviews</span>
+    }
+    void PrintPrice()
+    {
+        if (Model.Item5 != null)
+        {
+            <p style="font-size:20px;color:black">
+                <span title="Current Price"> @string.Format("{0:C}", Model.Item1.Price - Model.Item1.Price * Model.Item5.Percentage / 100m)</span>
+                <del title="Old Price"> @string.Format("{0:C}", Model.Item1.Price) </del> 
+            </p>
+        }
+        else 
+        {
+            <p title="Current Price">
+                $@Html.DisplayFor(model => Model.Item1.Price)
+            </p>
+        }
+    }
+    async Task FavouriteHeart(string controller)
+    {
+        if (ViewBag.Favourite == null)
+        {
+            <form asp-action="MakeFavourite" asp-controller="Favourites" method="post" style="display:inline-flex">
+                <input name="furId" hidden value="@Model.Item1.Id"/>                
+                <button type="submit" style="font-size:35px">&#128420;<sub style="font-size:15px">Add to favourite</sub></button>
+            </form>
+        }
+        else
+        {
+            <form asp-action="RemoveFavourite" asp-controller="Favourites" method="post" style="display:inline-flex">
+                <input name="furId" hidden value="@Model.Item1.Id" />
+                <button type="submit" style="font-size:35px">&#129505;<sub style="font-size:15px">Remove from favourite</sub></button>
+            </form>
+        }    
+    }
+    async Task RatingStars()
+    { 
+        if(ViewBag.Rates==null)
+        {
+            <br />
+            <span>How do you see this product?</span>
+            <form method="post" asp-controller="Ratings" asp-action="AddRate" style="display:inline-flex">
+                <div class="rate">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <input type="radio" id="star+@i" name="rate" value="@i" />
+                        <label for="star+@i" title="text">@i stars</label>
+                    }
+                </div>
+                <input type="submit" value="save rate" />
+            </form>
+        }
+        else
+        {
+            <br />
+            <span>Your rate: </span>
+            for(int i=0;i<(int)ViewBag.Rates.Stars;i++)
+            {
+                <i style="color:#e99c2e;font-size:30px">&starf;</i>
+            }
+            <form asp-action="RemoveRate" asp-controller="Ratings" method="post" style="display:inline-flex">
+                <button type="submit" style="color:red">delete rate</button>
+            </form>
+        }
+    }
+}
+
+
+<!-- .item -->
+<div class="item active" >
+    <div class="single-slide-item slide1" >
+        <div class="container">
+            <div class="welcome-hero-content">
+                <div class="row" >
+                    <div class="col-md-6  col-sm-12" >
+                    <div class="single-welcome-hero">
+                            <div class="welcome-hero-img">
+                                <img src="~/Images/@Model.Item1.Imagepath" title="Product Image" alt="Product Image" style="height:400px">
+                            </div><!--/.welcome-hero-txt-->
+                        </div><!--/.single-welcome-hero-->
+                    </div><!--/.col-->
+                    <div class="col-md-6 offset-md-3 col-sm-12" style="display:inline-flex">
+                        <div class="single-welcome-hero" >
+                            <div class="welcome-hero-txt">
+                                <h2 title="Product Name">@Html.DisplayFor(model => Model.Item1.Name)</h2>
+                                <p title="Description">
+                                    @Html.DisplayFor(model=>Model.Item1.Description)
+                                </p>
+                                <div title="Rating">
+                                    @{
+                                        PrintStars();
+                                    }
+                                </div>
+                                <div>
+                                    @{
+                                        PrintPrice();
+                                    }
+                                </div>
+                                <form asp-action="AddToCart" asp-controller="Bags" method="post" style="display:inline">
+                                    <input name="furId" hidden value="@Model.Item1.Id" />
+
+                                    <button type="submit" class="btn-cart welcome-add-cart" >Add to cart</button>
+                                </form>
+                                @{
+                                  await FavouriteHeart("Favourites");
+                                }
+                                @{
+                                    await RatingStars();
+                                }
+                            </div><!--/.welcome-hero-txt-->
+                        </div><!--/.single-welcome-hero-->
+                    </div><!--/.col-->   
+                </div><!--/.row-->
+            </div><!--/.welcome-hero-content-->
+        </div><!-- /.container-->
+    </div><!-- /.single-slide-item-->
+</div>
+
+
+
+
+
+<!--Image slider-->
+@if (Model.Item2.Count() != 0)
+{
+    <section id="clients" class="clients">
+        <div class="container">
+            <div class="section-header">
+                <h2>Images</h2>
+            </div><!--/.section-header-->
+            <div class="owl-carousel owl-theme" id="client">
+                @foreach (Image image in Model.Item2)
+                {
+                    <div class="item">
+                        <a href="#">
+                            <img src="~/Images/@image.Imagepath" alt="brand-image" style="padding-left:20px;width:250px;height:250px;"/>
+                        </a>  
+                    </div><!--/.item-->
+                }
+            </div><!--/.owl-carousel-->
+        </div><!--/.container-->
+    </section><!--/.clients-->
+<!-- clients end -->
+}
+
+
+
+
+
+
+
+
+
+<section id="new-arrivals" class="new-arrivals">
+	<div class="container">
+		<div class="section-header">
+			<h2>Comments</h2>
+		</div><!--/.section-header-->
+           <!--Add Comment-->
+        <fieldset>
+		    <form asp-action="WriteComment" asp-controller="Comments" method="post" style="background-color:#e99c2e;padding:25px">
+		        <div class="row">
+			        <div class="col-4 offset-2">
+				        <input type="text" class="form-control" id="text" name="text" placeholder="Write your comment" style="height:50px"  required maxlength="200">
+			        </div>
+                    <br />
+                    <div class="col-4 offset-2">
+                        <center><button type="submit" style="height:50px;width:150px;background-color:darkslategray;color:white">Add Comment</button></center>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+		<div class="new-arrivals-content">
+			<div class="row">
+				@{
+					foreach (Comment comment in Model.Item3)
+					{
+						<div class="col-md-3 col-sm-4">
+							<div class="single-new-arrival">                                
+								<div class="single-new-arrival-bg">
+									<img src="~/Images/@comment.User.Imagepath" alt="new-arrivals images">
+								</div>
+								<h4>@comment.User.Firstname @comment.User.Lastname</h4>
+								<p class="arrival-product-price">@comment.Description</p>
+							</div>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	</div><!--/.container-->
+</section><!--/.new-arrivals-->
+
+@*<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>*@

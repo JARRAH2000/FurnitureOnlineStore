@@ -1,0 +1,55 @@
+﻿@model FurnitureStore.Models.Pages
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Pages</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="About" class="control-label"></label>
+                <input asp-for="About" class="form-control" type="text" required />
+                <span asp-validation-for="About" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AboutImage" class="control-label">About Image</label>
+                <input asp-for="AboutImage" class="form-control" type="file" accept="image/*" required  />
+                <span asp-validation-for="AboutImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MainLogo" class="control-label">Main Logo</label>
+                <input asp-for="MainLogo" class="form-control" type="file" accept="image/*" required />
+                <span asp-validation-for="MainLogo" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="TopImage" class="control-label">Top Image</label>
+                <input asp-for="TopImage" class="form-control" type="file" accept="image/*" required />
+                <span asp-validation-for="TopImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Greeting" class="control-label"></label>
+                <input asp-for="Greeting" class="form-control" type="text" required />
+                <span asp-validation-for="Greeting" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SecLogoPath" class="control-label"></label>
+                <input asp-for="SecLogoPath" class="form-control" type="text" required />
+                <span asp-validation-for="SecLogoPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

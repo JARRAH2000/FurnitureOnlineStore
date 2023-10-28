@@ -1,0 +1,68 @@
+﻿@model FurnitureStore.Models.ContactInfo
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "_AdminLayout";
+}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h1>Edit</h1>
+            <h4>ContactInfo</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input asp-for="Phone" class="form-control" type="tel"/>
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" type="email"/>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Facebook" class="control-label"></label>
+                            <input asp-for="Facebook" class="form-control" type="url"/>
+                            <span asp-validation-for="Facebook" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Instagram" class="control-label"></label>
+                            <input asp-for="Instagram" class="form-control" type="url"/>
+                            <span asp-validation-for="Instagram" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Twitter" class="control-label"></label>
+                            <input asp-for="Twitter" class="form-control" type="url"/>
+                            <span asp-validation-for="Twitter" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Youtube" class="control-label"></label>
+                            <input asp-for="Youtube" class="form-control" type="url"/>
+                            <span asp-validation-for="Youtube" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Fax" class="control-label"></label>
+                            <input asp-for="Fax" class="form-control" type="tel"/>
+                            <span asp-validation-for="Fax" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" type="text"/>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+           
+        </div>
+    </div>
+</div>

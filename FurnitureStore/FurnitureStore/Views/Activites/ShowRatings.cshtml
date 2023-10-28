@@ -1,0 +1,46 @@
+﻿@model IEnumerable<FurnitureStore.Models.Rating>
+
+@{
+    ViewData["Title"] = "ShowComments";
+    Layout = "_HomeLayout";
+}
+@functions{
+    void PrintStars(int starts)
+    {
+        while (starts-- > 0)
+        {
+            <i style="color:#e99c2e;font-size:30px">&starf;</i>
+        }
+    }
+}
+<link rel="stylesheet" href="~/css/RatingStarsStyleSheet.css" />
+
+<div class="container" style="margin-top:150px;">
+    <div class="row">
+        <div class="col-md-4">
+            Name
+        </div>
+        <div class="col-md-4">
+            Section
+        </div>
+        <div class="col-md-4">
+            Rating
+        </div>
+    </div>
+    <hr />
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <div class="col-md-4">
+                <h4><a asp-action="ShowProduct" asp-controller="Furnitures" asp-route-id="@item.FurnitureId"> @Html.DisplayFor(modelItem => item.Furniture.Name)</a></h4>
+            </div>
+            <div class="col-md-4">
+                <h4><a asp-action="FurnituresOfSection" asp-controller="Furnitures" asp-route-id="@item.Furniture.SectionId"> @Html.DisplayFor(modelItem => item.Furniture.Section.Name)</a></h4>
+            </div>
+            <div class="col-md-4">
+                @{PrintStars((int)item.Stars);}
+            </div>
+        </div>
+        <hr />
+    }
+</div>

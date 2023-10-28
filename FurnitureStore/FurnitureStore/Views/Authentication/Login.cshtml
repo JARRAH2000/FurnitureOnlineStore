@@ -1,0 +1,81 @@
+﻿@model FurnitureStore.Models.Account
+
+@{
+	ViewData["Title"] = "Login";
+	Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+@functions{
+    async Task LoginImage()
+    {
+        ModelContext context = new ModelContext();
+        var loginImage = context.Pages.FirstOrDefault();
+        if(loginImage!=null)
+        {
+            <div class="col-md-6 offset-md-6">
+                    <img src="~/Images/@loginImage.TopImagePath" class="mt-auto" style="width:600px;height:250px;">
+            </div>
+        }
+    }
+}
+<link rel="stylesheet" href="~/css/myStyleSheet.css">
+
+       
+<div class="container">    
+    <fieldset>
+        <form method="POST" style="margin-top:100px;">
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <p>Please login with your account</p>
+                    <label asp-for="Username" class="font-weight-bold mb-0"></label>
+                    <input asp-for="Username" class="form-control" type="text" class="mb-4" placeholder="example@email.com" required />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <label asp-for="Password" class="font-weight-bold mb-0"></label>
+                    <input asp-for="Password" class="form-control" type="password" placeholder="Password" required />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <center><button type="submit" class="btn btn-yellow px-5">Login</button></center>
+                </div>
+            </div>
+            <br />
+            @if (ViewData["Authentication"] != null)
+            {
+                <div class="row">
+                    <div class="col-md-6 offset-md-6">
+                        <center><h2 style="color:red">@ViewData["Authentication"]</h2></center>
+                    </div>
+                </div>
+            }
+            <br />
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <center> <h4>Don't have an account? <a asp-action="Register"><h1 style="color:blue">Sing in</h1></a></h4></center>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                @{await LoginImage();}
+            </div> 
+        </form>
+    </fieldset> 
+</div>
+
+
+<style>
+    .row{
+        display: flex;
+        justify-content: center;
+    }
+
+    .col-md-6 {
+        width: 50%;
+    }
+
+</style>

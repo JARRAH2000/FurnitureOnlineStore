@@ -1,0 +1,59 @@
+﻿@model FurnitureStore.Models.Pages
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "_AdminLayout";
+}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <h1>Edit</h1>
+
+            <h4>Pages</h4>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="Edit" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group">
+                            <label asp-for="About" class="control-label"></label>
+                            <input asp-for="About" class="form-control" />
+                            <span asp-validation-for="About" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AboutImage" class="control-label"></label>
+                            <input asp-for="AboutImage" class="form-control" type="file" accept="image/*"/>
+                            <span asp-validation-for="AboutImage" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MainLogo" class="control-label"></label>
+                            <input asp-for="MainLogo" class="form-control" type="file" accept="image/*"/>
+                            <span asp-validation-for="MainLogo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TopImage" class="control-label"></label>
+                            <input asp-for="TopImage" class="form-control" type="file" accept="image/*" />
+                            <span asp-validation-for="TopImage" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Greeting" class="control-label"></label>
+                            <input asp-for="Greeting" class="form-control" />
+                            <span asp-validation-for="Greeting" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SecLogoPath" class="control-label"></label>
+                            <input asp-for="SecLogoPath" class="form-control" />
+                            <span asp-validation-for="SecLogoPath" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

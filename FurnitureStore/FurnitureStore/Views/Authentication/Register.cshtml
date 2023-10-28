@@ -1,0 +1,87 @@
+﻿@model FurnitureStore.Models.User
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";///
+}
+
+<section id="blog" class="blog" style="color:#e99c2e;margin-top:50px;">
+<!-- .item -->
+    <div class="section-header">
+        <h2 style="color:#e99c2e">Register</h2>
+    </div><!--/.section-header-->
+<div class="item active">
+    <form enctype="multipart/form-data" method="post" >
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-lg-offset-3">
+                    <label asp-for="Firstname" class="control-label"></label>
+                    <input type="text" asp-for="Firstname" class="form-control" placeholder="First Name">
+                                    
+                    <label asp-for="Lastname" class="control-label"></label>
+                    <input type="text" asp-for="Lastname" class="form-control" placeholder="Last Name">
+                                
+                    <label asp-for="Birthdate" class="control-label"></label>
+                    <input type="date" asp-for="Birthdate" class="form-control">
+                                
+                    <label asp-for="Sex" class="control-label"></label>
+                    <select asp-for="Sex" class="form-control">
+                        <option selected>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <img id="output" src="~/Images/defaultUserImage.png" style="border:groove;height:210px;width:210px;" />
+                    <br />
+                    <input type="button" value="remove" id="removebutton" onclick="dropFile('output','image')" hidden />
+                    <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" onchange="loadFile(event)" id="image" width="150" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                    <div class="col-lg-6 col-lg-offset-3">
+                    <label for="username" class="control-label">Email</label>
+                    <input type="email" name="username" id="username" class="form-control" placeholder="example@email.com">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                    <div class="col-lg-3 col-lg-offset-3">
+                    <label for="password" class="control-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+                </div>
+                <div class="col-lg-3">
+                    <label for="repeatedpassword" class="control-label">Repeat password</label>
+                    <input type="password" id="repeatedpassword" name="repeatedpassword" class="form-control" placeholder="Repeat your password">
+                </div>
+                @if (ViewData["ErrorMessage"] != null)
+                {
+                    <center><h2 style="color:red;">@ViewData["ErrorMessage"].ToString()</h2></center>
+                }
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                    <div class="col-lg-3 col-lg-offset-3">
+                    <button class="btn-cart welcome-add-cart welcome-more-info" type="reset">
+                        reset
+                    </button>
+                </div>
+                <div class="col-lg-3">
+                <button class="btn-cart welcome-add-cart" type="submit">
+                    Sign <span>in</span>
+                </button>
+                </div>
+            </div>
+        </div>
+   </form>
+        <center> <h4>Have an account? <a asp-action="Login" style="color:blue;font-size:20px;">Log in</a></h4></center>
+</div><!-- /.item .active-->
+</section>
+
+<script src="~/js/myScript.js">
+</script>
+
